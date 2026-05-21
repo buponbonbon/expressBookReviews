@@ -5,11 +5,12 @@ const public_users = express.Router();
 
 /**
  * Route: Get all books
- * Input: None
- * Output: JSON list of all books
+ * Implementation: Uses asynchronous Axios call to retrieve data.
+ * Input: None | Output: List of all books in JSON format.
  */
 public_users.get('/', async function (req, res) {
     try {
+        // Asynchronously fetch all books from the database via Axios
         const response = await axios.get('http://localhost:5000/');
         res.status(200).json(response.data);
     } catch (error) {
@@ -19,12 +20,13 @@ public_users.get('/', async function (req, res) {
 
 /**
  * Route: Get book by ISBN
- * Input: isbn (URL parameter)
- * Output: JSON object of the book matching the ISBN
+ * Implementation: Asynchronous request to filter by ISBN.
+ * Input: ISBN | Output: Specific book object.
  */
 public_users.get('/isbn/:isbn', async function (req, res) {
     try {
         const isbn = req.params.isbn;
+        // Perform asynchronous HTTP request to fetch book by ISBN
         const response = await axios.get(`http://localhost:5000/isbn/${isbn}`);
         res.status(200).json(response.data);
     } catch (error) {
@@ -34,13 +36,13 @@ public_users.get('/isbn/:isbn', async function (req, res) {
 
 /**
  * Route: Get books by Author
- * Input: author (URL parameter)
- * Output: JSON list of books by the specified author
+ * Implementation: Asynchronous filter logic based on author name.
+ * Input: Author Name | Output: List of books by that author.
  */
 public_users.get('/author/:author', async function (req, res) {
     try {
         const author = req.params.author;
-        // Logic: Extract values from the book object and filter by the author's name
+        // Asynchronously process request and filter records by author
         const response = await axios.get(`http://localhost:5000/author/${encodeURIComponent(author)}`);
         res.status(200).json(response.data);
     } catch (error) {
@@ -50,13 +52,13 @@ public_users.get('/author/:author', async function (req, res) {
 
 /**
  * Route: Get books by Title
- * Input: title (URL parameter)
- * Output: JSON list of books matching the specified title
+ * Implementation: Asynchronous filter logic based on book title.
+ * Input: Title | Output: List of books matching the title.
  */
 public_users.get('/title/:title', async function (req, res) {
     try {
         const title = req.params.title;
-        // Logic: Extract values and filter the book array based on exact title match
+        // Asynchronously process request and filter records by book title
         const response = await axios.get(`http://localhost:5000/title/${encodeURIComponent(title)}`);
         res.status(200).json(response.data);
     } catch (error) {
