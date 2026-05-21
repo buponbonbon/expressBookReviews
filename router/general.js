@@ -1,45 +1,45 @@
 const express = require('express');
-const axios = require('axios'); // Đảm bảo đã cài axios: npm install axios
+let books = require("./booksdb.js"); // Đảm bảo bạn import đúng file dữ liệu
 const public_users = express.Router();
 
-// Hàm lấy tất cả sách sử dụng Promises
-function getAllBooks() {
-  return new Promise((resolve, reject) => {
-    // Giả sử server của bạn chạy tại http://localhost:5000
-    axios.get('http://localhost:5000/')
-      .then(response => resolve(response.data))
-      .catch(error => reject(error));
-  });
-}
+// 1. Lấy tất cả sách (sử dụng Promise)
+public_users.get('/', function (req, res) {
+  new Promise((resolve, reject) => {
+    resolve(JSON.stringify(books, null, 4));
+  }).then(result => res.send(result));
+});
 
-// Hàm lấy sách theo ISBN sử dụng Async/Await
-async function getBookByISBN(isbn) {
-  try {
-    const response = await axios.get(`http://localhost:5000/isbn/${isbn}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
+// 2. Lấy sách theo ISBN (sử dụng Promise)
+public_users.get('/isbn/:isbn', function (req, res) {
+  const isbn = req.params.isbn;
+  new Promise((resolve, reject) => {
+    const book = books[isbn];
+    if (book) resolve(book);
+    else reject("Book not found");
+  }).then(result => res.send(result))
+    .catch(error => res.status(404).send(error));
+});
 
-// Hàm lấy sách theo Author sử dụng Promises
-function getBooksByAuthor(author) {
-  return new Promise((resolve, reject) => {
-    axios.get(`http://localhost:5000/author/${author}`)
-      .then(response => resolve(response.data))
-      .catch(error => reject(error));
-  });
-}
+// 3. Lấy sách theo Tác giả (sử dụng Promise)
+public_users.get('/author/:author', function (req, res) {
+  const author = req.params.author;
+  new Promise((resolve, reject) => {
+    const matchingBooks = Object.values(books).filter(book => book.author === author);
+    if (matchingBooks.length > 0) resolve(matchingBooks);
+    else reject("No books found for this author");
+  }).then(result => res.send(result))
+    .catch(error => res.status(404).send(error));
+});
 
-// Hàm lấy sách theo Title sử dụng Async/Await
-async function getBooksByTitle(title) {
-  try {
-    const response = await axios.get(`http://localhost:5000/title/${title}`);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
+// 4. Lấy sách theo Tiêu đề (sử dụng Promise)
+public_users.get('/title/:title', function (req, res) {
+  const title = req.params.title;
+  new Promise((resolve, reject) => {
+    const matchingBooks = Object.values(books).filter(book => book.title === title);
+    if (matchingBooks.length > 0) resolve(matchingBooks);
+    else reject("No books found with this title");
+  }).then(result => res.send(result))
+    .catch(error => res.status(404).send(error));
+});
 
-// Export các hàm để sử dụng ở nơi khác
-module.exports = { getAllBooks, getBookByISBN, getBooksByAuthor, getBooksByTitle };
+module.exports.general = public_users;
