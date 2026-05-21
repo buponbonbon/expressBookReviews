@@ -4,7 +4,7 @@ const axios = require('axios');
 const public_users = express.Router();
 
 // Get all books list
-// Uses Axios to fetch the full list of books from the server
+// Input: None | Output: JSON list of all books
 public_users.get('/', async function (req, res) {
     try {
         const response = await axios.get('http://localhost:5000/');
@@ -15,7 +15,7 @@ public_users.get('/', async function (req, res) {
 });
 
 // Get book details based on ISBN
-// Uses Axios to query book data from the server based on the provided ISBN
+// Input: isbn (URL parameter) | Output: JSON object of the specific book
 public_users.get('/isbn/:isbn', async function (req, res) {
     try {
         const isbn = req.params.isbn;
@@ -27,7 +27,7 @@ public_users.get('/isbn/:isbn', async function (req, res) {
 });
 
 // Get book details based on author
-// Uses Axios to filter and return books matching the specified author
+// Input: author (URL parameter) | Output: JSON list of books by the author
 public_users.get('/author/:author', async function (req, res) {
     try {
         const author = req.params.author;
@@ -39,7 +39,7 @@ public_users.get('/author/:author', async function (req, res) {
 });
 
 // Get all books based on title
-// Uses Axios to filter and return books matching the specified title
+// Input: title (URL parameter) | Output: JSON list of books matching the title
 public_users.get('/title/:title', async function (req, res) {
     try {
         const title = req.params.title;
